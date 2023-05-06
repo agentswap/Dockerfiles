@@ -25,7 +25,7 @@ jobs:
       matrix:
         gradio: [3.28.3]
         distro: [python]
-        codename: [bullseye, slim-bullseye, alpine3.17]
+        codename: [bullseye, slim-bullseye]
 
     permissions:
       packages: write
@@ -56,34 +56,15 @@ jobs:
             org.opencontainers.image.title=Gradio ${{matrix.gradio}} container image based on ${{matrix.distro}} ${{matrix.codename}}
             org.opencontainers.image.description=Gradio ${{matrix.gradio}} container image based on ${{matrix.distro}} ${{matrix.codename}}
 
-      - name: Build and push Docker image from Debian
+      - name: Build and push Docker image
         uses: docker/build-push-action@v4
         env:
           PYPI_GRADIO_VERSION: ${{matrix.gradio}}
           DISTRO: ${{matrix.distro}}
           CODENAME: ${{matrix.codename}}
-        if: contains(matrix.codename, 'bullseye')
         with:
           context: '{{defaultContext}}:gradio/${{env.GRADIO_MAJOR_VERSION}}/${{matrix.codename}}'
-          platforms: linux/amd64, linux/arm64
-          push: ${{github.event_name != 'pull_request'}}
-          tags: ${{steps.meta.outputs.tags}}
-          labels: ${{steps.meta.outputs.labels}}
-          build-args: |
-            PYPI_GRADIO_VERSION
-            DISTRO
-            CODENAME
-
-      - name: Build and push Docker image from Alpine Linux
-        uses: docker/build-push-action@v4
-        env:
-          PYPI_GRADIO_VERSION: ${{matrix.gradio}}
-          DISTRO: ${{matrix.distro}}
-          CODENAME: ${{matrix.codename}}
-        if: contains(matrix.codename, 'alpine')
-        with:
-          context: '{{defaultContext}}:gradio/${{env.GRADIO_MAJOR_VERSION}}/${{matrix.codename}}'
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           push: ${{github.event_name != 'pull_request'}}
           tags: ${{steps.meta.outputs.tags}}
           labels: ${{steps.meta.outputs.labels}}
