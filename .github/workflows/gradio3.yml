@@ -64,7 +64,7 @@ jobs:
           CODENAME: ${{matrix.codename}}
         with:
           context: '{{defaultContext}}:gradio/${{env.GRADIO_MAJOR_VERSION}}/${{matrix.codename}}'
-          platforms: linux/amd64
+          platforms: linux/amd64, linux/arm64
           push: ${{github.event_name != 'pull_request'}}
           tags: ${{steps.meta.outputs.tags}}
           labels: ${{steps.meta.outputs.labels}}
